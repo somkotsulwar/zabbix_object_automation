@@ -25,8 +25,8 @@
                     <delay>30s</delay>
                 </item>
                 <item>
-                    <name>CDR Collection Service - Port 3021</name>
-                    <key>net.tcp.service[custom,3021]</key>
+                    <name>CDR Collection Service - Port 3001</name>
+                    <key>net.tcp.service[custom,3001]</key>
                     <type>0</type>
                     <value_type>3</value_type>
                     <delay>30s</delay>
@@ -46,7 +46,7 @@
                     <priority>4</priority>
                 </trigger>
                 <trigger>
-                    <description>CDR Collection Service is DOWN (Port 30121)</description>
+                    <description>CDR Collection Service is DOWN (Port 3001)</description>
                     <expression>{Template CDR Processing Application:net.tcp.service[custom,3021].last()}=0</expression>
                     <priority>5</priority>
                 </trigger>

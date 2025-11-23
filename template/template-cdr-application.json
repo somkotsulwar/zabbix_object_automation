@@ -1,0 +1,49 @@
+{
+  "name": "Template CDR Processing Application",
+  "groups": [
+    {
+      "name": "Templates",
+      "groupid": "1"
+    }
+  ],
+  "items": [
+    {
+      "name": "CPU Utilization",
+      "key_": "system.cpu.util",
+      "type": 0,
+      "value_type": 0,
+      "delay": "30s"
+    },
+    {
+      "name": "CDR Collection Service - Port 30021",
+      "key_": "net.tcp.service[custom,30021]",
+      "type": 0,
+      "value_type": 3,
+      "delay": "30s"
+    },
+    {
+      "name": "CDR Backlog File Count (Parsing Queue)",
+      "key_": "vfs.dir.count[/cdr/incoming]",
+      "type": 0,
+      "value_type": 3,
+      "delay": "60s"
+    }
+  ],
+  "triggers": [
+    {
+      "description": "High CPU usage on CDR Application",
+      "expression": "{Template CDR Processing Application:system.cpu.util.last()}>85",
+      "priority": 4
+    },
+    {
+      "description": "CDR Collection Service DOWN - Port 30121",
+      "expression": "{Template CDR Processing Application:net.tcp.service[custom,30121].last()}=0",
+      "priority": 5
+    },
+    {
+      "description": "CDR Backlog Too High (Parsing Queue)",
+      "expression": "{Template CDR Processing Application:vfs.dir.count[/cdr/incoming].last()}>50",
+      "priority": 4
+    }
+  ]
+}

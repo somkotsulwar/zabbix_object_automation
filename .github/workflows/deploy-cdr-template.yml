@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@4
+        uses: actions/checkout@v4
       
       - name: Install Ansible and zabbix collection
         run: |
@@ -26,6 +26,5 @@ jobs:
           ZABBIX_API_URL: ${{ secrets.ZABBIX_API_URL }}
           ZABBIX_USERNAME: ${{ secrets.ZABBIX_USERNAME }}
           ZABBIX_PASSWORD: ${{ secrets.ZABBIX_PASSWORD }}
-        run:
-          ansible-playbook deploy-cdr-template.yml
+        run: ansible-playbook deploy-cdr-template.yml
         

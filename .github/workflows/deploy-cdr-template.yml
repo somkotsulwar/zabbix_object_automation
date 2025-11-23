@@ -1,0 +1,31 @@
+name: Deploy Zabbix CDR Template
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "templates/**"
+      - "deploy-cdr-template.yml"
+      
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@4
+      
+      - name: Install Ansible and zabbix collection
+        run: |
+          sudo apt update
+          sudo apt install python3-pip
+          pip3 install ansible
+          ansible-galaxy collection install community.zabbix
+          
+
+      - name: Deploy template
+        env:
+          ZABBIX_API_URL: ${{ secrets.ZABBIX_API_URL }}
+          ZABBIX_USERNAME: ${{ secrets.ZABBIX_USERNAME }}
+          ZABBIX_PASSWORD: ${{ secrets.ZABBIX_PASSWORD }}
+        run:
+          ansible-playbook deploy-cdr-template.yml
+        

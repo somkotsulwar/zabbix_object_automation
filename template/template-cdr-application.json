@@ -1,49 +1,61 @@
-{
-  "name": "Template CDR Processing Application",
-  "groups": [
-    {
-      "name": "Templates",
-      "groupid": "1"
-    }
-  ],
-  "items": [
-    {
-      "name": "CPU Utilization",
-      "key_": "system.cpu.util",
-      "type": 0,
-      "value_type": 0,
-      "delay": "30s"
-    },
-    {
-      "name": "CDR Collection Service - Port 30021",
-      "key_": "net.tcp.service[custom,30021]",
-      "type": 0,
-      "value_type": 3,
-      "delay": "30s"
-    },
-    {
-      "name": "CDR Backlog File Count (Parsing Queue)",
-      "key_": "vfs.dir.count[/cdr/incoming]",
-      "type": 0,
-      "value_type": 3,
-      "delay": "60s"
-    }
-  ],
-  "triggers": [
-    {
-      "description": "High CPU usage on CDR Application",
-      "expression": "{Template CDR Processing Application:system.cpu.util.last()}>85",
-      "priority": 4
-    },
-    {
-      "description": "CDR Collection Service DOWN - Port 30121",
-      "expression": "{Template CDR Processing Application:net.tcp.service[custom,30121].last()}=0",
-      "priority": 5
-    },
-    {
-      "description": "CDR Backlog Too High (Parsing Queue)",
-      "expression": "{Template CDR Processing Application:vfs.dir.count[/cdr/incoming].last()}>50",
-      "priority": 4
-    }
-  ]
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>7.4</version>
+    <date>2025-08-01T00:00:00Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template CDR Processing Application</template>
+            <name>Template CDR Processing Application</name>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <name>CPU Utilization</name>
+                    <key>system.cpu.util</key>
+                    <type>0</type>
+                    <value_type>0</value_type>
+                    <delay>30s</delay>
+                </item>
+                <item>
+                    <name>CDR Collection Service - Port 3021</name>
+                    <key>net.tcp.service[custom,3021]</key>
+                    <type>0</type>
+                    <value_type>3</value_type>
+                    <delay>30s</delay>
+                </item>
+                <item>
+                    <name>CDR Backlog File Count</name>
+                    <key>vfs.dir.count[/cdr/incoming]</key>
+                    <type>0</type>
+                    <value_type>3</value_type>
+                    <delay>60s</delay>
+                </item>
+            </items>
+            <triggers>
+                <trigger>
+                    <description>High CPU usage on CDR Application</description>
+                    <expression>{Template CDR Processing Application:system.cpu.util.last()}>85</expression>
+                    <priority>4</priority>
+                </trigger>
+                <trigger>
+                    <description>CDR Collection Service is DOWN (Port 30121)</description>
+                    <expression>{Template CDR Processing Application:net.tcp.service[custom,30121].last()}=0</expression>
+                    <priority>5</priority>
+                </trigger>
+                <trigger>
+                    <description>CDR Parsing Backlog Too High</description>
+                    <expression>{Template CDR Processing Application:vfs.dir.count[/cdr/incoming].last()}>50</expression>
+                    <priority>4</priority>
+                </trigger>
+            </triggers>
+        </template>
+    </templates>
+</zabbix_export>

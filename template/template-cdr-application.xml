@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
-    <version>7.4</version>
+    <version>7.0</version>
     <date>2025-08-01T00:00:00Z</date>
     <groups>
         <group>
@@ -47,7 +47,7 @@
                 </trigger>
                 <trigger>
                     <description>CDR Collection Service is DOWN (Port 30121)</description>
-                    <expression>{Template CDR Processing Application:net.tcp.service[custom,30121].last()}=0</expression>
+                    <expression>{Template CDR Processing Application:net.tcp.service[custom,3021].last()}=0</expression>
                     <priority>5</priority>
                 </trigger>
                 <trigger>

@@ -1,5 +1,5 @@
 ---
-- name: Import Zabbix Template – CDR
+- name: Import Zabbix Template – CDR (API Method)
   hosts: localhost
   connection: local
   gather_facts: no
@@ -12,18 +12,54 @@
 
   tasks:
 
-    - name: Import Zabbix object (Template)
-      community.zabbix.zabbix_import:
-        server_url: "{{ zabbix_url }}"
-        login_user: "{{ zabbix_user }}"
-        login_password: "{{ zabbix_password }}"
-        source: "{{ lookup('file', template_file) }}"
-        format: xml
-        rules:
-          templates:
-            createMissing: true
-            updateExisting: true
+    - name: Read XML template
+      slurp:
+        src: "{{ template_file }}"
+      register: xml_file
 
-    - name: Print result
+    - name: Convert XML to string
+      set_fact:
+        xml_content: "{{ xml_file.content | b64decode }}"
+
+    - name: Get auth token
+      uri:
+        url: "{{ zabbix_url }}"
+        method: POST
+        body_format: json
+        body:
+          jsonrpc: "2.0"
+          method: "user.login"
+          params:
+            username: "{{ zabbix_user }}"
+            password: "{{ zabbix_password }}"
+          id: 1
+        return_content: yes
+      register: login_reply
+
+    - name: Extract token
+      set_fact:
+        auth_token: "{{ login_reply.json.result }}"
+
+    - name: Import template into Zabbix
+      uri:
+        url: "{{ zabbix_url }}"
+        method: POST
+        body_format: json
+        body:
+          jsonrpc: "2.0"
+          method: "configuration.import"
+          params:
+            format: "xml"
+            rules:
+              templates:
+                createMissing: true
+                updateExisting: true
+            source: "{{ xml_content }}"
+          auth: "{{ auth_token }}"
+          id: 2
+        return_content: yes
+      register: import_result
+
+    - name: Show result
       debug:
-        msg: "Template import completed."
+        var: import_result.json

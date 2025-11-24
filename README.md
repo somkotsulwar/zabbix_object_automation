@@ -4,7 +4,22 @@ This repository demonstrates a GitOps workflow for deploying Zabbix Templates us
 Whenever the XML template is updated in Git, GitHub Actions automatically deploys it to the Zabbix Server through the Zabbix API.
 
 ---
-
+## Repo Structure 
+```text
+zabbix_object_automation/
+│
+├── template/
+│   └── template-cdr-application.xml
+│
+├── playbook-deploy-cdr-template.yml
+│
+├── .github/
+│   └── workflows/
+│       └── deploy-cdr-template.yml
+│
+└── README.md
+```
+---
 ##  Template: CDR Processing Application
 
 **Template Name:** `Template CDR Processing Application`  

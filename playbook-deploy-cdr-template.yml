@@ -4,7 +4,7 @@
   connection: local
   gather_facts: no
 
-  vars:
+ vars:
     zabbix_url: "{{ lookup('env','ZABBIX_API_URL') }}"
     zabbix_user: "{{ lookup('env','ZABBIX_USERNAME') }}"
     zabbix_password: "{{ lookup('env','ZABBIX_PASSWORD') }}"
@@ -12,13 +12,13 @@
 
   tasks:
 
-    - name: Import template into Zabbix
-      community.zabbix.zabbix_template:
+    - name: Import Zabbix object (Template)
+      community.zabbix.zabbix_import:
         server_url: "{{ zabbix_url }}"
         login_user: "{{ zabbix_user }}"
         login_password: "{{ zabbix_password }}"
-        template_xml: "{{ lookup('file', template_file) }}"
-        state: present
+        source: "{{ lookup('file', template_file) }}"
+        format: xml
         rules:
           templates:
             createMissing: true
@@ -26,4 +26,4 @@
 
     - name: Print result
       debug:
-        msg: "Template imported successfully."
+        msg: "Template import completed."

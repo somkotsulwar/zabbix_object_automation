@@ -1,0 +1,29 @@
+---
+- name: Import Zabbix Template – CDR
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    zabbix_url: "{{ lookup('env','ZABBIX_API_URL') }}"
+    zabbix_user: "{{ lookup('env','ZABBIX_USERNAME') }}"
+    zabbix_password: "{{ lookup('env','ZABBIX_PASSWORD') }}"
+    template_file: "{{ template_file }}"
+
+  tasks:
+
+    - name: Import template into Zabbix
+      community.zabbix.zabbix_template:
+        server_url: "{{ zabbix_url }}"
+        login_user: "{{ zabbix_user }}"
+        login_password: "{{ zabbix_password }}"
+        import_file: "{{ template_file }}"
+        state: present
+        rules:
+          templates:
+            createMissing: true
+            updateExisting: true
+
+    - name: Print result
+      debug:
+        msg: "Template imported successfully."

@@ -7,7 +7,12 @@
   vars:
     raw_url: "{{ lookup('env','ZABBIX_API_URL') | default('') }}"
     zabbix_url: "{{ raw_url | trim }}"
-    is_mock: "{{ (zabbix_url | lower == 'mock') or (zabbix_url == '') }}"
+    is_mock: >-
+      {{ 
+        (zabbix_url | lower == 'mock')
+        or (zabbix_url == '')
+        or ('api_jsonrpc.php' not in zabbix_url)
+      }}
     template_file: "{{ template_file }}"
     zabbix_user: "{{ lookup('env','ZABBIX_USERNAME') }}"
     zabbix_password: "{{ lookup('env','ZABBIX_PASSWORD') }}"

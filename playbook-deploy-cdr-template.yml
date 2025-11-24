@@ -1,29 +1,16 @@
 ---
-- name: Import Zabbix Template – CDR (Mock Mode Supported)
+- name: Import Zabbix Template – CDR (API Method)
   hosts: localhost
   connection: local
-  gather_facts: false
+  gather_facts: no
 
   vars:
-    raw_url: "{{ lookup('env','ZABBIX_API_URL') | default('') }}"
-    zabbix_url: "{{ raw_url | trim }}"
-    is_mock: "{{ (zabbix_url | lower == 'mock') or (zabbix_url == '') }}"
-    template_file: "{{ template_file }}"
+    zabbix_url: "{{ lookup('env','ZABBIX_API_URL') }}"
     zabbix_user: "{{ lookup('env','ZABBIX_USERNAME') }}"
     zabbix_password: "{{ lookup('env','ZABBIX_PASSWORD') }}"
+    template_file: "{{ template_file }}"
 
   tasks:
-
-    - name: Show mode
-      debug:
-        msg: "MOCK MODE ENABLED — Skipping API calls."
-      when: is_mock
-
-    - name: Exit early in mock mode
-      meta: end_play
-      when: is_mock
-
-    # -------------------- REAL MODE BELOW --------------------
 
     - name: Read XML template
       slurp:
@@ -53,7 +40,7 @@
       set_fact:
         auth_token: "{{ login_reply.json.result }}"
 
-    - name: Import template via Zabbix API
+    - name: Import template into Zabbix
       uri:
         url: "{{ zabbix_url }}"
         method: POST
@@ -73,6 +60,6 @@
         return_content: yes
       register: import_result
 
-    - name: Print import result
+    - name: Show result
       debug:
         var: import_result.json

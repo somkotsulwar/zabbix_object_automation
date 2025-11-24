@@ -5,34 +5,34 @@
   gather_facts: false
 
   vars:
-    zabbix_url: "{{ lookup('env','ZABBIX_API_URL') }}"
+    raw_url: "{{ lookup('env','ZABBIX_API_URL') | default('') }}"
+    zabbix_url: "{{ raw_url | trim }}"
+    is_mock: "{{ (zabbix_url | lower == 'mock') or (zabbix_url == '') }}"
+    template_file: "{{ template_file }}"
     zabbix_user: "{{ lookup('env','ZABBIX_USERNAME') }}"
     zabbix_password: "{{ lookup('env','ZABBIX_PASSWORD') }}"
-    template_file: "{{ template_file }}"
 
   tasks:
 
-    - name: Check if mock mode is enabled
+    - name: Show mode
       debug:
-        msg: "Mock mode detected — skipping Zabbix API calls."
-      when: zabbix_url == 'mock'
+        msg: "MOCK MODE ENABLED — Skipping API calls."
+      when: is_mock
 
-    - name: Exit early in mock mode (success)
+    - name: Exit early in mock mode
       meta: end_play
-      when: zabbix_url == 'mock'
+      when: is_mock
 
-    #  Real API workflow (only runs if real URL is set) -------------------------
+    # -------------------- REAL MODE BELOW --------------------
 
     - name: Read XML template
       slurp:
         src: "{{ template_file }}"
       register: xml_file
-      when: zabbix_url != 'mock'
 
     - name: Convert XML to string
       set_fact:
         xml_content: "{{ xml_file.content | b64decode }}"
-      when: zabbix_url != 'mock'
 
     - name: Get auth token
       uri:
@@ -48,12 +48,10 @@
           id: 1
         return_content: yes
       register: login_reply
-      when: zabbix_url != 'mock'
 
-    - name: Extract auth token
+    - name: Extract token
       set_fact:
         auth_token: "{{ login_reply.json.result }}"
-      when: zabbix_url != 'mock'
 
     - name: Import template via Zabbix API
       uri:
@@ -74,8 +72,7 @@
           id: 2
         return_content: yes
       register: import_result
-      when: zabbix_url != 'mock'
 
-    - name: Print result
+    - name: Print import result
       debug:
-        msg: "Template import completed successfully (mock or real)."
+        var: import_result.json

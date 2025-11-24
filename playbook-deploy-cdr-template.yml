@@ -17,7 +17,7 @@
         server_url: "{{ zabbix_url }}"
         login_user: "{{ zabbix_user }}"
         login_password: "{{ zabbix_password }}"
-        import_file: "{{ template_file }}"
+        template_xml: "{{ lookup('file', template_file) }}"
         state: present
         rules:
           templates:

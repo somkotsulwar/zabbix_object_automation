@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
     paths:
       - 'template/template-cdr-application.xml'
-      - 'ansible/**'
+      - 'playbook-deploy-cdr-template.yml'
       - '.github/workflows/deploy-cdr-template.yml'
 
 jobs:
@@ -32,5 +32,5 @@ jobs:
           ZABBIX_USERNAME: ${{ secrets.ZABBIX_USERNAME }}
           ZABBIX_PASSWORD: ${{ secrets.ZABBIX_PASSWORD }}
         run: |
-          ansible-playbook ansible/deploy-cdr-template.yml \
+          ansible-playbook playbook-deploy-cdr-template.yml \
             -e template_file=template/template-cdr-application.xml

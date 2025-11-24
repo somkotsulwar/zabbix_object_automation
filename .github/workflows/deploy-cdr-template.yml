@@ -23,6 +23,9 @@ jobs:
           ansible-galaxy collection install community.zabbix
           ansible-galaxy collection install community.general
 
+      - name: Show installed Ansible collections
+        run: ansible-galaxy collection list
+
       - name: Install XML Tools
         run: |
           sudo apt-get update

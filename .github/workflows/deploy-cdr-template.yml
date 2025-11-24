@@ -27,6 +27,11 @@ jobs:
       - name: Show installed Ansible collections
         run: ansible-galaxy collection list
 
+      - name: Print API URL (masked)
+        run: echo "ZABBIX_API_URL is set"
+        env:
+          ZABBIX_API_URL: ${{ secrets.ZABBIX_API_URL }}
+          
       - name: Install XML Tools
         run: |
           sudo apt-get update
@@ -35,7 +40,6 @@ jobs:
       - name: Validate XML
         run: |
           xmllint --noout template/template-cdr-application.xml
-
 
       - name: Deploy template to Zabbix
         env:

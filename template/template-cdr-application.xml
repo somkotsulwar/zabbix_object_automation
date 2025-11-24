@@ -47,7 +47,7 @@
                 </trigger>
                 <trigger>
                     <description>CDR Collection Service is DOWN (Port 3001)</description>
-                    <expression>{Template CDR Processing Application:net.tcp.service[custom,3021].last()}=0</expression>
+                    <expression>{Template CDR Processing Application:net.tcp.service[custom,3001].last()}=0</expression>
                     <priority>5</priority>
                 </trigger>
                 <trigger>

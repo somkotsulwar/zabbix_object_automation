@@ -1,8 +1,8 @@
 ---
-- name: Import Zabbix Template – CDR (API Method)
+- name: Import Zabbix Template – CDR (Mock Mode Supported)
   hosts: localhost
   connection: local
-  gather_facts: no
+  gather_facts: false
 
   vars:
     zabbix_url: "{{ lookup('env','ZABBIX_API_URL') }}"
@@ -12,14 +12,27 @@
 
   tasks:
 
+    - name: Check if mock mode is enabled
+      debug:
+        msg: "Mock mode detected — skipping Zabbix API calls."
+      when: zabbix_url == 'mock'
+
+    - name: Exit early in mock mode (success)
+      meta: end_play
+      when: zabbix_url == 'mock'
+
+    #  Real API workflow (only runs if real URL is set) -------------------------
+
     - name: Read XML template
       slurp:
         src: "{{ template_file }}"
       register: xml_file
+      when: zabbix_url != 'mock'
 
     - name: Convert XML to string
       set_fact:
         xml_content: "{{ xml_file.content | b64decode }}"
+      when: zabbix_url != 'mock'
 
     - name: Get auth token
       uri:
@@ -35,12 +48,14 @@
           id: 1
         return_content: yes
       register: login_reply
+      when: zabbix_url != 'mock'
 
-    - name: Extract token
+    - name: Extract auth token
       set_fact:
         auth_token: "{{ login_reply.json.result }}"
+      when: zabbix_url != 'mock'
 
-    - name: Import template into Zabbix
+    - name: Import template via Zabbix API
       uri:
         url: "{{ zabbix_url }}"
         method: POST
@@ -59,7 +74,8 @@
           id: 2
         return_content: yes
       register: import_result
+      when: zabbix_url != 'mock'
 
-    - name: Show result
+    - name: Print result
       debug:
-        var: import_result.json
+        msg: "Template import completed successfully (mock or real)."

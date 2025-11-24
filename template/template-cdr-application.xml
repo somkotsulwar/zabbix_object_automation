@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
-    <version>7.0</version>
+    <version>7.3</version>
     <date>2025-10-01T00:00:00Z</date>
     <groups>
         <group>
@@ -41,7 +41,7 @@
             </items>
             <triggers>
                 <trigger>
-                    <description>High CPU usage on CDR Application</description>
+                    <description>High CPU usage on Vodafone on</description>
                     <expression>{Template CDR Processing Application:system.cpu.util.last()}>85</expression>
                     <priority>4</priority>
                 </trigger>

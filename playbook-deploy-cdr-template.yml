@@ -4,7 +4,7 @@
   connection: local
   gather_facts: no
 
- vars:
+  vars:
     zabbix_url: "{{ lookup('env','ZABBIX_API_URL') }}"
     zabbix_user: "{{ lookup('env','ZABBIX_USERNAME') }}"
     zabbix_password: "{{ lookup('env','ZABBIX_PASSWORD') }}"
